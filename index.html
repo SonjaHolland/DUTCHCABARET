@@ -143,9 +143,10 @@ background:lightgreen;
 
 <div id="menu">
 
-<div class="card" onclick="playVideo('141XXkTKzyc')">
-<img src="https://hosting.photobucket.com/bc02da2e-8afb-4b69-a4bf-9332cae392c5/4652dbba-f774-4bd8-9045-0466bb087cac.jpg">
-<div class="title">Toon Hermans</div>
+<!-- Aangepast: Roept nu de playlist-ID aan en start bij video RGM46J71yvc -->
+<div class="card" onclick="playPlaylist('PLM6yCxszeM8N1L6fyADZ2cjwPuROBn8hO', 'RGM46J71yvc')">
+<img src="https://hosting.photobucket.com/bc02da2e-8afb-4b69-a4bf-9332cae392c5/168161ad-076f-4cda-9bf3-7e25bb79774b.jpg">
+<div class="title">Toon Hermans (Playlist)</div>
 </div>
 
 <div class="card" onclick="playVideo('2CSAeFTwaMc')">
@@ -172,8 +173,8 @@ let player;
 let timer;
 let ccOn = false;
 
+// Functie voor losse video's
 function playVideo(id){
-
 document.getElementById("menu").style.display="none";
 document.getElementById("back").style.display="block";
 document.getElementById("ccbtn").style.display="block";
@@ -196,7 +197,34 @@ events:{
 onReady:onReady
 }
 });
+}
 
+// Nieuwe functie specifiek voor playlists
+function playPlaylist(playlistId, videoId){
+document.getElementById("menu").style.display="none";
+document.getElementById("back").style.display="block";
+document.getElementById("ccbtn").style.display="block";
+document.getElementById("player").style.display="block";
+
+document.getElementById("player").innerHTML=`
+<div id="ytplayer"></div>
+<input type="range" id="seek" value="0" min="0" max="100">
+`;
+
+player = new YT.Player('ytplayer',{
+playerVars:{
+autoplay:1,
+controls:1,
+rel:0,
+cc_load_policy:0,
+listType:'playlist',
+list:playlistId,
+index: 0 // Eventueel kun je hier de index aanpassen, of YouTube start op basis van de playlistkoppeling
+},
+events:{
+onReady:onReady
+}
+});
 }
 
 function onReady(){
@@ -229,20 +257,12 @@ ccOn = !ccOn;
 const btn = document.getElementById("ccbtn");
 
 if(ccOn){
-
-// probeer Nederlands / captions aan
 player.loadModule("captions");
-
 player.setOption("captions","track",{languageCode:"nl"});
-
 btn.classList.add("active");
-
 }else{
-
 player.setOption("captions","track",null);
-
 btn.classList.remove("active");
-
 }
 
 }
